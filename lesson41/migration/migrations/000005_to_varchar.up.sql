@@ -1,0 +1,9 @@
+BEGIN;
+
+ALTER TABLE users
+ALTER COLUMN id TYPE VARCHAR;
+
+UPDATE users
+SET id = id::VARCHAR;
+
+COMMIT;
