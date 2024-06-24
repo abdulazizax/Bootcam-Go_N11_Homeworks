@@ -1,35 +1,42 @@
 package storage
 
 import (
-	"atto/storage/postgres"
 	"atto/storage/repo"
+	"atto/storage/postgres"
 
 	"github.com/jmoiron/sqlx"
 )
 
 type IStorage interface {
-	Author() repo.AuthorsStorageI
-	Book() repo.BooksStorageI
+	Card() repo.CardStorageI
+	Station() repo.StationStorageI
+	Transaction() repo.TransactionStorageI
 }
 
 type storagePg struct {
-	db         *sqlx.DB
-	authorRepo repo.AuthorsStorageI
-	bookRepo   repo.BooksStorageI
+	db              *sqlx.DB
+	cardRepo        repo.CardStorageI
+	stationRepo     repo.StationStorageI
+	transactionRepo repo.TransactionStorageI
 }
 
 func NewStoragePg(db *sqlx.DB) *storagePg {
 	return &storagePg{
-		db:         db,
-		authorRepo: postgres.NewAuthorrepo(db),
-		bookRepo:   postgres.NewBookrepo(db),
+		db:              db,
+		cardRepo:        postgres.NewCardRepo(db),
+		stationRepo:     postgres.NewStationRepo(db),
+		transactionRepo: postgres.NewTransactionRepo(db),
 	}
 }
 
-func (s *storagePg) Author() repo.AuthorsStorageI {
-	return s.authorRepo
+func (s *storagePg) Card() repo.CardStorageI {
+	return s.cardRepo
 }
 
-func (s *storagePg) Book() repo.BooksStorageI {
-	return s.bookRepo
+func (s *storagePg) Station() repo.StationStorageI {
+	return s.stationRepo
+}
+
+func (s *storagePg) Transaction() repo.TransactionStorageI {
+	return s.transactionRepo
 }

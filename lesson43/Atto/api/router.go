@@ -21,23 +21,27 @@ func New(option Option) *gin.Engine {
 	})
 
 	crud := router.Group("")
-	crud.POST("/author", handler.CreateAuthor)
-	crud.POST("/book", handler.CreateBook)
+	crud.POST("/card/post", handler.CreateCard)
+	crud.POST("/transaction/post", handler.CreateTransaction)
+	crud.POST("/station/post", handler.CreateStation)
 
-	crud.GET("/author", handler.GetAuthors)
-	crud.GET("/book", handler.GetBooks)
+	crud.GET("/card/get", handler.GetCards)
+	crud.GET("/transaction/get", handler.GetTransactions)
+	crud.GET("/station/get", handler.GetStations)
 
-	crud.GET("/author/:id", handler.GetAuthorByID)
-	crud.GET("/book/:id", handler.GetBookByID)
+	crud.GET("/card/get/:id", handler.GetCardByID)
+	crud.GET("/transaction/get/:id", handler.GetTransactionByID)
+	crud.GET("/station/get/:id", handler.GetStationByID)
 
-	crud.GET("/authorName/:name", handler.GetAuthorByName)
-	crud.GET("/bookTitle/:title", handler.GetBookByTitle)
+	crud.GET("/station/get/:name", handler.GetStationByName)
 
-	crud.PUT("/author/:id", handler.UpdateAuthoByID)
-	crud.PUT("/book/:id", handler.UpdateBookByID)
+	crud.PUT("/card/put/:id", handler.UpdateCardByID)
+	crud.PUT("/transaction/put/:id", handler.UpdateTransactionByID)
+	crud.PUT("/station/put/:id", handler.UpdateStationByID)
 
-	crud.DELETE("/author/:id", handler.DeleteAuthorByID)
-	crud.DELETE("/book/:id", handler.DeleteBookByID)
+	crud.DELETE("/card/:id", handler.DeleteCardByID)
+	crud.DELETE("/transaction/:id", handler.DeleteTransactionByID)
+	crud.DELETE("/station/:id", handler.DeleteStationByID)
 
 	return router
 }
