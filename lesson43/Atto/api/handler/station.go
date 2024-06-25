@@ -19,7 +19,7 @@ func (h *handler) CreateStation(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(200, res)
+	c.IndentedJSON(201, res)
 }
 
 func (h *handler) GetStations(c *gin.Context) {
@@ -71,4 +71,16 @@ func (h *handler) DeleteStationByID(c *gin.Context) {
 	}
 
 	c.IndentedJSON(200, gin.H{"message": "Station deleted"})
+}
+
+func (h *handler) GetStationByName(c *gin.Context) {
+	id := c.Param("name")
+
+	res, err := h.storage.Station().GetStationByName(c, id)
+	if err != nil {
+		c.IndentedJSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(200, res)
 }

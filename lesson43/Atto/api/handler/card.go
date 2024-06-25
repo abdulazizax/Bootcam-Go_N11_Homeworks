@@ -19,7 +19,7 @@ func (h *handler) CreateCard(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(200, res)
+	c.IndentedJSON(201, res)
 }
 
 func (h *handler) GetCardByID(c *gin.Context) {

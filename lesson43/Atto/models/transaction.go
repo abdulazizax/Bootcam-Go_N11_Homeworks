@@ -12,7 +12,6 @@ type TransactionResponse struct {
 }
 
 type TransactionRequest struct {
-	Transaction_ID   string  `json:"transaction_id"`
 	Card_ID          string  `json:"card_id"`
 	Amount           float64 `json:"amount"`
 	Terminal_ID      string  `json:"terminal_id"`

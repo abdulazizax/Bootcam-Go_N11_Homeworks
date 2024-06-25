@@ -23,8 +23,7 @@ func New(option Option) *gin.Engine {
 	crud := router.Group("")
 	{
 		crud.POST("/card/post", handler.CreateCard)
-		crud.POST("/transaction/debit/post", handler.CreateDebitTransaction)
-		crud.POST("/transaction/credit/post", handler.CreateCreditTransaction)
+		crud.POST("/transaction/debit/post", handler.CreateTransaction)
 		crud.POST("/station/post", handler.CreateStation)
 
 		crud.GET("/card/get", handler.GetCards)
