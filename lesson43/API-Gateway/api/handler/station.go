@@ -105,6 +105,40 @@ func (h *handler) GetStationById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *handler) GetStationByName(w http.ResponseWriter, r *http.Request) {
+	name := GetIDFromURL(r.URL.Path)
+	if name == "" {
+		http.Error(w, "Invalid Name", http.StatusBadRequest)
+		return
+	}
+
+	resp, err := http.Get("http://localhost:8082/station/get/name/" + name)
+	if err != nil {
+		http.Error(w, "Failed to send GET request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to read response body", http.StatusInternalServerError)
+		return
+	}
+
+	var books m.StationResponse
+	if err := json.Unmarshal(body, &books); err != nil {
+		http.Error(w, "Failed to unmarshal response body", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(books); err != nil {
+		http.Error(w, "Failed to encode response body", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (h *handler) UpdateStationById(w http.ResponseWriter, r *http.Request) {
 	id := GetIDFromURL(r.URL.Path)
 	if id == "" {

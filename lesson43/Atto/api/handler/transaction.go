@@ -74,7 +74,7 @@ func (h *handler) DeleteTransactionByID(c *gin.Context) {
 	c.IndentedJSON(200, gin.H{"message": "Transaction deleted"})
 }
 
-func (h *handler) GetTransactionsByUserID(c *gin.Context) {
+func (h *handler) GetTransactionsByCardID(c *gin.Context) {
 	id := c.Param("id")
 
 	res, err := h.storage.Transaction().GetTransactionByCardId(c, id)

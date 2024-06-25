@@ -32,6 +32,7 @@ func New(option Option) *gin.Engine {
 
 		crud.GET("/card/get/:id", handler.GetCardByID)
 		crud.GET("/transaction/get/:id", handler.GetTransactionByID)
+		crud.GET("/transaction/get/card_id/:id", handler.GetTransactionsByCardID)
 		crud.GET("/station/get/:id", handler.GetStationByID)
 
 		crud.GET("/station/get/name/:name", handler.GetStationByName)

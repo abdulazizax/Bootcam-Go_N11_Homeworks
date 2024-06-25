@@ -105,6 +105,40 @@ func (h *handler) GetTransactionById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *handler) GetTransactionByCardId(w http.ResponseWriter, r *http.Request) {
+	id := GetIDFromURL(r.URL.Path)
+	if id == "" {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	resp, err := http.Get("http://localhost:8082/transaction/get/card_id/" + id)
+	if err != nil {
+		http.Error(w, "Failed to send GET request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to read response body", http.StatusInternalServerError)
+		return
+	}
+
+	var books m.TransactionResponse
+	if err := json.Unmarshal(body, &books); err != nil {
+		http.Error(w, "Failed to unmarshal response body", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(books); err != nil {
+		http.Error(w, "Failed to encode response body", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (h *handler) UpdateTransactionById(w http.ResponseWriter, r *http.Request) {
 	id := GetIDFromURL(r.URL.Path)
 	if id == "" {

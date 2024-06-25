@@ -24,8 +24,9 @@ func New() *http.ServeMux {
 	router.HandleFunc("GET /card/get/{id}", handler.GetCardById)
 	router.HandleFunc("GET /station/get/{id}", handler.GetStationById)
 	router.HandleFunc("GET /transaction/get/{id}", handler.GetTransactionById)
+	router.HandleFunc("GET /transaction/get/card_id//{id}", handler.GetTransactionByCardId)
 
-	// router.HandleFunc("GET /user_name/get/{name}", handler.GetUserById)
+	router.HandleFunc("GET /station/get/name/{name}", handler.GetStationByName)
 
 	router.HandleFunc("PUT /user/put/{id}", handler.UpdateUserById)
 	router.HandleFunc("PUT /card/put/{id}", handler.UpdateCardById)

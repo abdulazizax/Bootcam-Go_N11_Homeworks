@@ -1,12 +1,12 @@
 package main
 
 import (
-	"user/api"
-	"user/config"
-	"user/storage"
 	"fmt"
 	"log"
 	"os"
+	"user/api"
+	"user/config"
+	"user/storage"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
