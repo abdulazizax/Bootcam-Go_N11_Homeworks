@@ -9,20 +9,18 @@ import (
 func (h *handler) CreateUser(c *gin.Context) {
 	var newUser m.UserRequest
 	if err := c.ShouldBindJSON(&newUser); err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
+		c.IndentedJSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	res, err := h.storage.User().CreateUser(c, newUser)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.IndentedJSON(400, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	c.JSON(200, res)
+	c.IndentedJSON(200, res)
 }
 
 func (h *handler) GetUserByID(c *gin.Context) {

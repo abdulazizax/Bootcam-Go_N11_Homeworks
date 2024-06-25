@@ -10,10 +10,10 @@ migrate_down:
 	migrate -path migrations -database ${DB_URL}  -verbose down
 
 migrate_force:
-	migrate -path migrations -database ${DB_URL}  -verbose force 1
+	migrate -path migrations -database ${DB_URL}  -verbose force 2
 
 migrate_file:
-	migrate create -ext sql -dir migrations -seq crete_tables
+	migrate create -ext sql -dir migrations -seq insert_tables
 
 swag-gen:
 	~/go/bin/swag init -g ./api/router.go -o api/docs force 1
