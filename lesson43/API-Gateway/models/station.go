@@ -8,7 +8,3 @@ type StationResponse struct {
 	Created_at   time.Time `json:"created_at"`
 	Updated_at   time.Time `json:"updated_at"`
 }
-
-type StationRequest struct {
-	Station_Name string `json:"station_name"`
-}

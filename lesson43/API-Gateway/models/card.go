@@ -9,8 +9,3 @@ type CardResponse struct {
 	Created_at  time.Time `json:"created_at"`
 	Updated_at  time.Time `json:"updated_at"`
 }
-
-type CardRequest struct {
-	Card_Number string    `json:"card_number"`
-	User_id     string    `json:"user_id"`
-}
