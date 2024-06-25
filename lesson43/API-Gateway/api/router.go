@@ -1,43 +1,41 @@
 package api
 
 import (
-	h "api/api/handler"
-	"api/storage"
-
-	"github.com/gin-gonic/gin"
+	h "api-gateway/api/handler"
+	"net/http"
 )
 
-type Option struct {
-	Storage storage.IStorage
-}
+func New() *http.ServeMux {
+	router := http.NewServeMux()
 
-func New(option Option) *gin.Engine {
-	router := gin.Default()
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+	handler := h.New(&h.HandlerConfig{})
 
-	handler := h.New(&h.HandlerConfig{
-		Storage: option.Storage,
-	})
+	router.HandleFunc("POST /user/post", handler.CreateUser)
+	router.HandleFunc("POST /card/post", handler.CreateCard)
+	router.HandleFunc("POST /station/post", handler.CreateStation)
+	router.HandleFunc("POST /transaction/post", handler.CreateTransaction)
 
-	crud := router.Group("")
-	crud.POST("/author", handler.CreateAuthor)
-	crud.POST("/book", handler.CreateBook)
+	router.HandleFunc("GET /user/get", handler.GetUsers)
+	router.HandleFunc("GET /card/get", handler.GetCards)
+	router.HandleFunc("GET /station/get", handler.GetStations)
+	router.HandleFunc("GET /transaction/get", handler.GetTransactions)
 
-	crud.GET("/author", handler.GetAuthors)
-	crud.GET("/book", handler.GetBooks)
+	router.HandleFunc("GET /user/get/{id}", handler.GetUserById)
+	router.HandleFunc("GET /card/get/{id}", handler.GetCardById)
+	router.HandleFunc("GET /station/get/{id}", handler.GetStationById)
+	router.HandleFunc("GET /transaction/get/{id}", handler.GetTransactionById)
 
-	crud.GET("/author/:id", handler.GetAuthorByID)
-	crud.GET("/book/:id", handler.GetBookByID)
+	// router.HandleFunc("GET /user_name/get/{name}", handler.GetUserById)
 
-	crud.GET("/authorName/:name", handler.GetAuthorByName)
-	crud.GET("/bookTitle/:title", handler.GetBookByTitle)
+	router.HandleFunc("PUT /user/put/{id}", handler.UpdateUserById)
+	router.HandleFunc("PUT /card/put/{id}", handler.UpdateCardById)
+	router.HandleFunc("PUT /station/put/{id}", handler.UpdateStationById)
+	router.HandleFunc("PUT /transaction/put/{id}", handler.UpdateTransactionById)
 
-	crud.PUT("/author/:id", handler.UpdateAuthoByID)
-	crud.PUT("/book/:id", handler.UpdateBookByID)
-
-	crud.DELETE("/author/:id", handler.DeleteAuthorByID)
-	crud.DELETE("/book/:id", handler.DeleteBookByID)
+	router.HandleFunc("DELETE /user/delete/{id}", handler.DeleteUserByID)
+	router.HandleFunc("DELETE /card/delete/{id}", handler.DeleteCardByID)
+	router.HandleFunc("DELETE /station/delete/{id}", handler.DeleteStationByID)
+	router.HandleFunc("DELETE /transaction/delete/{id}", handler.DeleteTransactionByID)
 
 	return router
 }

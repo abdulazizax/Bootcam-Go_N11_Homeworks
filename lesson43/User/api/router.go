@@ -23,15 +23,15 @@ func New(option Option) *gin.Engine {
 	crud := router.Group("")
 	crud.POST("/user/post", handler.CreateUser)
 
-	crud.GET("/book/get", handler.GetUsers)
+	crud.GET("/user/get", handler.GetUsers)
 
-	crud.GET("/book/get/:id", handler.GetUserByID)
+	crud.GET("/user/get/:id", handler.GetUserByID)
 
-	crud.GET("/book_name/get/:name", handler.GetUserByName)
+	crud.GET("/user_name/get/:name", handler.GetUserByName)
 
-	crud.PUT("/book/put/:id", handler.UpdateUserByID)
+	crud.PUT("/user/put/:id", handler.UpdateUserByID)
 
-	crud.DELETE("/book/delete/:id", handler.DeleteUserByID)
+	crud.DELETE("/user/delete/:id", handler.DeleteUserByID)
 
 	return router
 }

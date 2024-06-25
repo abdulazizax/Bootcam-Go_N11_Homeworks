@@ -42,7 +42,7 @@ func main() {
 
 	port := os.Getenv("SERVER_PORT")
 	if port == "" {
-		port = "8080"
+		port = "8081"
 	}
 	if err := server.Run(":" + port); err != nil {
 		log.Fatal("Failed to run HTTP server: ", err)
