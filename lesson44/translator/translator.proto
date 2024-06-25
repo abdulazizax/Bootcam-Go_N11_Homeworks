@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package translator;
+
+option go_package = "translator-gprc/translator";
+
+service Translator {
+  rpc Translate (TranslateRequest) returns (TranslateResponse);
+}
+
+message TranslateRequest {
+  string text = 1;
+}
+
+message TranslateResponse {
+  string translated_text = 1;
+}
