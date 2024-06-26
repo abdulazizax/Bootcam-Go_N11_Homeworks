@@ -2,7 +2,9 @@ package storage
 
 import (
 	"context"
+	pb "lesson45/protos"
 	m "lesson45/server/models"
+	"log"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -15,7 +17,7 @@ func NewBook(db *sqlx.DB) *Book {
 	return &Book{db: db}
 }
 
-func (b *Book) AddBook(ctx context.Context, book m.BookRequest) (string, error) {
+func (b *Book) AddBook(ctx context.Context, book *pb.AddBookRequest) (*pb.AddBookResponse, error) {
 	query := `
 		INSERT INTO books
     		(title, author, year_published)
@@ -26,16 +28,17 @@ func (b *Book) AddBook(ctx context.Context, book m.BookRequest) (string, error) 
 
 	var res string
 
-	row := b.db.QueryRowContext(ctx, query, book.Title, book.Author, book.Yearpublished)
+	row := b.db.QueryRowContext(ctx, query, book.Title, book.Author, book.YearPublished)
 	err := row.Scan(&res)
 	if err != nil {
-		return "", err
+		log.Println(err)
+		return &pb.AddBookResponse{}, err
 	}
 
-	return res, nil
+	return &pb.AddBookResponse{BookId: res}, nil
 }
 
-func (b *Book) SearchBookByID(ctx context.Context, book_id string) ([]m.BookResponse, error) {
+func (b *Book) SearchBookByID(ctx context.Context, book_id string) ([]*pb.Book, error) {
 	query := `
 		SELECT
 			book_id,
@@ -47,18 +50,23 @@ func (b *Book) SearchBookByID(ctx context.Context, book_id string) ([]m.BookResp
 		WHERE
 			book_id = $1 `
 
-	var bookResponse m.BookResponse
+	var bookResponse pb.Book
 
 	row := b.db.QueryRowContext(ctx, query, book_id)
-	err := row.Scan(&bookResponse.Book_id, &bookResponse.Title, &bookResponse.Author, &bookResponse.Yearpublished)
+	err := row.Scan(
+		&bookResponse.BookId,
+		&bookResponse.Title,
+		&bookResponse.Author,
+		&bookResponse.YearPublished)
 	if err != nil {
-		return []m.BookResponse{}, err
+		log.Println(err)
+		return []*pb.Book{}, err
 	}
 
-	return []m.BookResponse{bookResponse}, nil
+	return []*pb.Book{&bookResponse}, nil
 }
 
-func (b *Book) SearchBookByTitle(ctx context.Context, title string) ([]m.BookResponse, error) {
+func (b *Book) SearchBookByTitle(ctx context.Context, title string) ([]*pb.Book, error) {
 	query := `
 		SELECT
 			book_id,
@@ -70,26 +78,29 @@ func (b *Book) SearchBookByTitle(ctx context.Context, title string) ([]m.BookRes
 		WHERE
 			title = $1 `
 
-	var bookResponse []m.BookResponse
+	var bookResponse []*pb.Book
 
 	rows, err := b.db.QueryContext(ctx, query, title)
 	if err != nil {
-		return []m.BookResponse{}, err
+		log.Println(err.Error())
+		return []*pb.Book{}, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var res m.BookResponse
-		err = rows.Scan(&res.Book_id, &res.Title, &res.Author, &res.Yearpublished)
+		var res pb.Book
+		err = rows.Scan(&res.BookId, &res.Title, &res.Author, &res.YearPublished)
 		if err != nil {
-			return []m.BookResponse{}, err
+			log.Println(err.Error())
+			return []*pb.Book{}, err
 		}
-		bookResponse = append(bookResponse, res)
+		bookResponse = append(bookResponse, &res)
 	}
 
 	err = rows.Err()
 	if err != nil {
-		return []m.BookResponse{}, err
+		log.Println(err.Error())
+		return []*pb.Book{}, err
 	}
 
 	return bookResponse, nil
@@ -104,6 +115,7 @@ func (b *Book) BorrowBook(ctx context.Context, borrow m.BorrowBookRequest) (bool
 
 	_, err := b.db.ExecContext(ctx, query, borrow.Book_id, borrow.User_id)
 	if err != nil {
+		log.Println(err)
 		return false, err
 	}
 

@@ -5,7 +5,8 @@ option go_package = "libraryService/Book/";
 package LibraryService;
 
 service LibraryService{
-    rpc SearchBook(SeachBookRequest) returns (SeachBookResponse);
+    rpc SearchBookByID(SearchBookRequest) returns (SearchBookResponse);
+    rpc SearchBookByTitle(SearchBookRequest) returns (SearchBookResponse);
     rpc AddBook(AddBookRequest) returns (AddBookResponse);
     rpc BorrowBook(BorrowBookRequest) returns (BorrowBookResponse);
 }
@@ -30,11 +31,11 @@ message AddBookResponse{
 }
 
 // SearchBook
-message SeachBookRequest{
-   string serch_text = 1;   
+message SearchBookRequest{
+   string search_text = 1;   
 }
 
-message SeachBookResponse{
+message SearchBookResponse{
     repeated Book book = 1;
 }
 

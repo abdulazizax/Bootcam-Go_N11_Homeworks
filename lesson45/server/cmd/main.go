@@ -7,6 +7,7 @@ import (
 	"lesson45/server/storage"
 	"net"
 
+	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
 )
 
@@ -42,26 +43,35 @@ func main() {
 }
 
 func (s *server) AddBook(ctx context.Context, in *pb.AddBookRequest) (*pb.AddBookResponse, error) {
-	req := m.BookRequest{
-		Title:         in.Title,
-		Author:        in.Author,
-		Yearpublished: in.YearPublished,
-	}
-
-	res, err := s.b.AddBook(ctx, req)
+	res, err := s.b.AddBook(ctx, &pb.AddBookRequest{
+		Title: in.Title,
+		Author: in.Author,
+		YearPublished: in.YearPublished,
+	})
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AddBookResponse{BookId: res}, nil
+	return res, nil
 }
 
-func (s *server) SearchBook(ctx context.Context, in *pb.SeachBookRequest) (*pb.SeachBookResponse, error) {
-	res, err := s.b.SearchBookByTitle(ctx, in.SerchText)
+func (s *server) SearchBookByTitle(ctx context.Context, in *pb.SearchBookRequest) (*pb.SearchBookResponse, error) {
+	res, err := s.b.SearchBookByTitle(ctx, in.SearchText)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.SeachBookResponse{
-		Books: res,
+	return &pb.SearchBookResponse{
+		Book: res,
+	}, nil
+}
+
+func (s *server) SearchBookByID(ctx context.Context, in *pb.SearchBookRequest) (*pb.SearchBookResponse, error) {
+	res, err := s.b.SearchBookByID(ctx, in.SearchText)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.SearchBookResponse{
+		Book: res,
 	}, nil
 }
 
@@ -75,7 +85,5 @@ func (s *server) BorrowBook(ctx context.Context, in *pb.BorrowBookRequest) (*pb.
 		return nil, err
 	}
 
-	return &pb.BorrowBookResponse{
-		Success: res,
-	}, nil
+	return &pb.BorrowBookResponse{Message: res}, nil
 }

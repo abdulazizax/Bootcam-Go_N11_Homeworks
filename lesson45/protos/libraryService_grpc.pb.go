@@ -19,16 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	LibraryService_SearchBook_FullMethodName = "/LibraryService.LibraryService/SearchBook"
-	LibraryService_AddBook_FullMethodName    = "/LibraryService.LibraryService/AddBook"
-	LibraryService_BorrowBook_FullMethodName = "/LibraryService.LibraryService/BorrowBook"
+	LibraryService_SearchBookByID_FullMethodName    = "/LibraryService.LibraryService/SearchBookByID"
+	LibraryService_SearchBookByTitle_FullMethodName = "/LibraryService.LibraryService/SearchBookByTitle"
+	LibraryService_AddBook_FullMethodName           = "/LibraryService.LibraryService/AddBook"
+	LibraryService_BorrowBook_FullMethodName        = "/LibraryService.LibraryService/BorrowBook"
 )
 
 // LibraryServiceClient is the client API for LibraryService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LibraryServiceClient interface {
-	SearchBook(ctx context.Context, in *SeachBookRequest, opts ...grpc.CallOption) (*SeachBookResponse, error)
+	SearchBookByID(ctx context.Context, in *SearchBookRequest, opts ...grpc.CallOption) (*SearchBookResponse, error)
+	SearchBookByTitle(ctx context.Context, in *SearchBookRequest, opts ...grpc.CallOption) (*SearchBookResponse, error)
 	AddBook(ctx context.Context, in *AddBookRequest, opts ...grpc.CallOption) (*AddBookResponse, error)
 	BorrowBook(ctx context.Context, in *BorrowBookRequest, opts ...grpc.CallOption) (*BorrowBookResponse, error)
 }
@@ -41,10 +43,20 @@ func NewLibraryServiceClient(cc grpc.ClientConnInterface) LibraryServiceClient {
 	return &libraryServiceClient{cc}
 }
 
-func (c *libraryServiceClient) SearchBook(ctx context.Context, in *SeachBookRequest, opts ...grpc.CallOption) (*SeachBookResponse, error) {
+func (c *libraryServiceClient) SearchBookByID(ctx context.Context, in *SearchBookRequest, opts ...grpc.CallOption) (*SearchBookResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SeachBookResponse)
-	err := c.cc.Invoke(ctx, LibraryService_SearchBook_FullMethodName, in, out, cOpts...)
+	out := new(SearchBookResponse)
+	err := c.cc.Invoke(ctx, LibraryService_SearchBookByID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *libraryServiceClient) SearchBookByTitle(ctx context.Context, in *SearchBookRequest, opts ...grpc.CallOption) (*SearchBookResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchBookResponse)
+	err := c.cc.Invoke(ctx, LibraryService_SearchBookByTitle_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +87,8 @@ func (c *libraryServiceClient) BorrowBook(ctx context.Context, in *BorrowBookReq
 // All implementations must embed UnimplementedLibraryServiceServer
 // for forward compatibility
 type LibraryServiceServer interface {
-	SearchBook(context.Context, *SeachBookRequest) (*SeachBookResponse, error)
+	SearchBookByID(context.Context, *SearchBookRequest) (*SearchBookResponse, error)
+	SearchBookByTitle(context.Context, *SearchBookRequest) (*SearchBookResponse, error)
 	AddBook(context.Context, *AddBookRequest) (*AddBookResponse, error)
 	BorrowBook(context.Context, *BorrowBookRequest) (*BorrowBookResponse, error)
 	mustEmbedUnimplementedLibraryServiceServer()
@@ -85,8 +98,11 @@ type LibraryServiceServer interface {
 type UnimplementedLibraryServiceServer struct {
 }
 
-func (UnimplementedLibraryServiceServer) SearchBook(context.Context, *SeachBookRequest) (*SeachBookResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchBook not implemented")
+func (UnimplementedLibraryServiceServer) SearchBookByID(context.Context, *SearchBookRequest) (*SearchBookResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchBookByID not implemented")
+}
+func (UnimplementedLibraryServiceServer) SearchBookByTitle(context.Context, *SearchBookRequest) (*SearchBookResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchBookByTitle not implemented")
 }
 func (UnimplementedLibraryServiceServer) AddBook(context.Context, *AddBookRequest) (*AddBookResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddBook not implemented")
@@ -107,20 +123,38 @@ func RegisterLibraryServiceServer(s grpc.ServiceRegistrar, srv LibraryServiceSer
 	s.RegisterService(&LibraryService_ServiceDesc, srv)
 }
 
-func _LibraryService_SearchBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SeachBookRequest)
+func _LibraryService_SearchBookByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchBookRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LibraryServiceServer).SearchBook(ctx, in)
+		return srv.(LibraryServiceServer).SearchBookByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LibraryService_SearchBook_FullMethodName,
+		FullMethod: LibraryService_SearchBookByID_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LibraryServiceServer).SearchBook(ctx, req.(*SeachBookRequest))
+		return srv.(LibraryServiceServer).SearchBookByID(ctx, req.(*SearchBookRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LibraryService_SearchBookByTitle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LibraryServiceServer).SearchBookByTitle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LibraryService_SearchBookByTitle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LibraryServiceServer).SearchBookByTitle(ctx, req.(*SearchBookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -169,8 +203,12 @@ var LibraryService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LibraryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SearchBook",
-			Handler:    _LibraryService_SearchBook_Handler,
+			MethodName: "SearchBookByID",
+			Handler:    _LibraryService_SearchBookByID_Handler,
+		},
+		{
+			MethodName: "SearchBookByTitle",
+			Handler:    _LibraryService_SearchBookByTitle_Handler,
 		},
 		{
 			MethodName: "AddBook",
