@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option go_package = "libraryService/Book/";
+
+package LibraryService;
+
+service LibraryService{
+    rpc SearchBook(SeachBookRequest) returns (SeachBookResponse);
+    rpc AddBook(AddBookRequest) returns (AddBookResponse);
+    rpc BorrowBook(BorrowBookRequest) returns (BorrowBookResponse);
+}
+
+// Book
+message Book{
+    string book_id = 1;
+    string title = 2;
+    string author = 3;
+    int32 year_published = 4;
+}
+
+// AddBook
+message AddBookRequest{
+    string title = 1;
+    string author = 2;
+    int32 year_published = 3;
+}
+
+message AddBookResponse{
+    string book_id = 1;
+}
+
+// SearchBook
+message SeachBookRequest{
+   string serch_text = 1;   
+}
+
+message SeachBookResponse{
+    repeated Book book = 1;
+}
+
+// BorrowBook
+message BorrowBookRequest{
+    string book_id = 1;
+    string user_id = 2;
+}
+
+message BorrowBookResponse{
+    bool message = 1;
+}
+
+
