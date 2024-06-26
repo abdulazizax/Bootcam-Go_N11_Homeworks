@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	pb "lesson45/protos"
-	m "lesson45/server/models"
 	"log"
 
 	"github.com/jmoiron/sqlx"
@@ -106,14 +105,14 @@ func (b *Book) SearchBookByTitle(ctx context.Context, title string) ([]*pb.Book,
 	return bookResponse, nil
 }
 
-func (b *Book) BorrowBook(ctx context.Context, borrow m.BorrowBookRequest) (bool, error) {
+func (b *Book) BorrowBook(ctx context.Context, borrow *pb.BorrowBookRequest) (bool, error) {
 	query := `
 		INSERT INTO rent
 			(book_id, user_id)
 		VALUES
 			($1, $2)`
 
-	_, err := b.db.ExecContext(ctx, query, borrow.Book_id, borrow.User_id)
+	_, err := b.db.ExecContext(ctx, query, borrow.BookId, borrow.UserId)
 	if err != nil {
 		log.Println(err)
 		return false, err
