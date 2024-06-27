@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option go_package = "weather/";
+
+package Weather;
+
+service WeatherService {
+  rpc GetCurrentWeather (WeatherRequest) returns (WeatherResponse);
+  rpc GetWeatherForecast (ForecastRequest) returns (ForecastResponse);
+  rpc ReportWeatherCondition (WeatherCondition) returns (ReportResponse);
+}
+
+message WeatherRequest {
+  string location = 1;
+}
+
+message WeatherResponse {
+  float temperature = 1;
+  float humidity = 2;
+  float speedOfWind = 3;
+}
+
+message ForecastRequest {
+  string location = 1;
+  int32 days = 2;
+}
+
+message ForecastResponse {
+  repeated Forecast forecasts = 1;
+}
+
+message Forecast {
+  string date = 1;
+  float temperature_high = 2;
+  float temperature_low = 3;
+  string condition = 4;
+}
+
+message WeatherCondition {
+  string location = 1;
+  float temperature = 2;
+  float humidity = 3;
+  string condition = 4;
+}
+
+message ReportResponse {
+  string status = 1;
+}
