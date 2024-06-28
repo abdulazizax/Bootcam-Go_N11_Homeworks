@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option go_package = "transport/";
+
+package Transport;
+
+service TransportService {
+  rpc GetBusSchedule (ScheduleRequest) returns (ScheduleResponse);
+  rpc TrackBusLocation (LocationRequest) returns (LocationResponse);
+  rpc ReportTrafficJam (TrafficJamReport) returns (ReportResponse);
+}
+
+message ScheduleRequest {
+  string route_number = 1;
+}
+
+message ScheduleResponse {
+  repeated Schedule schedule = 1;
+}
+
+message Schedule {
+  string stop_name = 1;
+  string arrival_time = 2;
+}
+
+message LocationRequest {
+  string bus_id = 1;
+}
+
+message LocationResponse {
+  Location location = 1;
+}
+
+message Location {
+  float latitude = 1;
+  float longitude = 2;
+  string timestamp = 3;
+}
+
+message TrafficJamReport {
+  string location = 1;
+  string severity = 2;
+  string description = 3;
+}
+
+message ReportResponse {
+  string status = 1;
+}
