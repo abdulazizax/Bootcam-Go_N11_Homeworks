@@ -45,13 +45,12 @@ func (a *API) Run() *gin.Engine {
 func (a *API) AuthMiddleware() gin.HandlerFunc {
     return func(c *gin.Context) {
         user := c.GetHeader("User")
-        fmt.Printf("Received User header: %s\n", user) // Debug log
         if user == "" {
             c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
             return
         }
         c.Set("user", user)
-        fmt.Printf("Set user in context: %v\n", user) // Debug log
+        fmt.Printf("Set user in context: %v\n", user) 
         c.Next()
     }
 }
@@ -66,7 +65,6 @@ func (a *API) CheckPermission(action string) gin.HandlerFunc {
         }
 
         allowed, err := a.enforcer.Enforce(userStr, "users", action)
-        fmt.Printf("Permission check: user=%s, obj=users, act=%s, allowed=%v\n", userStr, action, allowed) // Debug log
         if err != nil {
             c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Error checking permissions"})
             return
